@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {UserEntity} from "./models/user.entity";
-import {Repository} from "typeorm";
+import {Like, Repository} from "typeorm";
 import {catchError, from, map, Observable, switchMap, throwError} from "rxjs";
 import {User, UserRole} from "./models/user.interface";
 import {AuthService} from "../auth/auth.service";
@@ -62,6 +62,45 @@ export class UserService {
             map((usersPagination: Pagination<User>) => {
                 usersPagination.items.forEach(function (user) {delete user.password});
                 return usersPagination;
+            })
+        )
+    }
+
+    paginateFilterByUsername(options: IPaginationOptions, user: User): Observable<Pagination<User>> {
+        return from(this.userRepository.findAndCount({
+            // @ts-ignore
+            skip: 0,
+            // @ts-ignore
+            take: options.limit || 10,
+            order: {id: 'ASC'},
+            select: ['id', 'name', 'username', 'email', 'role'],
+            where: [
+                {username: Like(`%${user.username}%`)}
+            ]
+        })).pipe(
+            map(([users, totalUsers]) => {
+                const usersPageable: Pagination<User> = {
+                   items: users,
+                   links: {
+                       first: options.route + `?limit=${options.limit}`,
+                       previous: options.route + ``,
+                       // @ts-ignore
+                       next: options.route + `?limit=${options.limit}&page=${options.page + 1}`,
+                       // @ts-ignore
+                       last: options.route + `?limit=${options.limit}&page=${Math.ceil(totalUsers/options.limit)}`,
+                   },
+                    meta: {
+                        // @ts-ignore
+                       currentPage: options.page,
+                       itemCount: users.length,
+                        // @ts-ignore
+                       itemsPerPage: options.limit,
+                       totalItems: totalUsers,
+                        // @ts-ignore
+                       totalPages: Math.ceil(totalUsers/options.limit)
+                    }
+                }
+                return usersPageable;
             })
         )
     }
