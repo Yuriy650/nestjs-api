@@ -69,7 +69,7 @@ export class UserService {
     paginateFilterByUsername(options: IPaginationOptions, user: User): Observable<Pagination<User>> {
         return from(this.userRepository.findAndCount({
             // @ts-ignore
-            skip: 0,
+            skip: options.page * options.limit || 0,
             // @ts-ignore
             take: options.limit || 10,
             order: {id: 'ASC'},
@@ -113,7 +113,9 @@ export class UserService {
         delete user.email;
         delete user.password;
         delete user.role;
-        return from(this.userRepository.update(id, user));
+        return from(this.userRepository.update(id, user)).pipe(
+            switchMap(() => this.findOne(id))
+        )
     }
 
     login(user: User): Observable<string> {
