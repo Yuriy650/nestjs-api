@@ -30,8 +30,27 @@ export class UsersService {
   fetchUsers(page: number, limit: number): Observable<any> {
     let params = new HttpParams();
     params = params.append('page', String(page));
-    params = params.append('limit', String(limit))
+    params = params.append('limit', String(limit));
     return this.http.get('http://localhost:3000/users', {params}).pipe(
+      map((userData) => userData),
+      catchError(err => throwError(err))
+    )
+  }
+
+  findOne(id: number): Observable<User> {
+    return this.http.get('http://localhost:3000/users/' + id).pipe(
+      //@ts-ignore
+      map((user: User) => user)
+    )
+  }
+
+  paginateByUsername(page: number, limit: number, username: string): Observable<UserData> {
+    let params = new HttpParams();
+    params = params.append('page', String(page));
+    params = params.append('limit', String(limit));
+    params = params.append('username', username);
+    return this.http.get('http://localhost:3000/users', {params}).pipe(
+      // @ts-ignore
       map((userData) => userData),
       catchError(err => throwError(err))
     )

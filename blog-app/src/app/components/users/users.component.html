@@ -1,8 +1,16 @@
 <h1 style="text-align: center">All users</h1>
+<mat-form-field>
+  <mat-label>Filter by username</mat-label>
+  <input matInput type="text"
+         placeholder="Username"
+         [(ngModel)]="filterValue"
+         (input)="findByUsername(filterValue)">
+</mat-form-field>
 <div *ngIf="usersDataSource">
   <mat-table [dataSource]="usersDataSource">
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let user; columns: displayedColumns"></mat-row>
+    <mat-row *matRowDef="let user; columns: displayedColumns"
+             (click)="navigateToCurrentProfile(user.id)"></mat-row>
     <ng-container matColumnDef="id">
       <mat-header-cell *matHeaderCellDef>Id</mat-header-cell>
       <mat-cell *matCellDef="let user">{{user.id}}</mat-cell>

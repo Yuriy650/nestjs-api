@@ -3,6 +3,7 @@ import {UserData, UsersService} from "../../services/users.service";
 import {map} from "rxjs";
 import {CdkTableDataSourceInput} from "@angular/cdk/table";
 import {PageEvent} from "@angular/material/paginator";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-users',
@@ -16,7 +17,10 @@ export class UsersComponent implements OnInit {
   public totalItems: number = 10;
   public itemsPerPage: number = 10;
   public displayedColumns: string[] = ['id', 'name', 'username', 'email', 'role']
-  constructor(private userService: UsersService) {
+  public filterValue: string = '';
+  constructor(private userService: UsersService,
+              private router: Router,
+              private activatedRoute: ActivatedRoute) {
 }
 
 ngOnInit() {
@@ -31,16 +35,38 @@ ngOnInit() {
 
   onPaginateChange(event: PageEvent) {
     let page = event.pageIndex;
-    let size = event.pageSize;
-    page = page + 1;
-    this.userService.fetchUsers(page, size).subscribe(
-      userData => this.getUserData(userData)
-    )
+    let limit = event.pageSize;
+
+    if (this.filterValue === null) {
+      page = page + 1;
+      this.userService.fetchUsers(page, limit).subscribe(
+        userData => this.getUserData(userData)
+      )
+    } else {
+      console.log('page', page)
+      this.userService.paginateByUsername(page, limit, this.filterValue).pipe(
+        map(userData => {
+          this.getUserData(userData);
+          console.log(userData)
+        })
+      ).subscribe();
+    }
+
   }
 
   getUserData(userData: UserData) {
     this.usersDataSource = userData.items;
     this.totalItems = userData.meta.totalItems;
     this.itemsPerPage = userData.meta.itemsPerPage;
+  }
+
+  public findByUsername(username: string) {
+    this.userService.paginateByUsername(0, 10, username).pipe(
+      map(userData => this.getUserData(userData))
+    ).subscribe();
+  }
+
+  public navigateToCurrentProfile(id: string) {
+    this.router.navigate(['./' + id], {relativeTo: this.activatedRoute})
   }
 }
