@@ -13,6 +13,6 @@ constructor(private configService: ConfigService) {
     })
 }
 async validate(payload: any) {
-    return {'user': payload.user}
+    return {...payload.user}
 }
 }

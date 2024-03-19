@@ -86,6 +86,8 @@ export class UserController {
        }
     }
 
+    @hasRoles(UserRole.ADMIN)
+    @UseGuards(JWTAuthGuard, RolesGuard)
     @Delete(':id')
     deleteOne(@Param('id') id: string): Observable<User> {
         return this.userService.deleteOne(+id);
@@ -94,7 +96,7 @@ export class UserController {
     @UseGuards(JWTAuthGuard, UserIsUserGuard)
     @Put(':id')
     updateOne(@Param('id') id: string, @Body() user: User): Observable<any> {
-        return this.userService.update(+id, user);
+        return this.userService.update(Number(id), user);
     }
 
     @hasRoles(UserRole.ADMIN)
@@ -108,7 +110,8 @@ export class UserController {
     @Post('upload')
     @UseInterceptors(FileInterceptor('file', STORAGE))
     uploadFile(@UploadedFile() file, @Request() req): Observable<Object> {
-        const user: User = req.user.user
+        console.log(req)
+        const user: User = req.user
         return this.userService.update(user.id, {profileImage: file.filename}).pipe(
            map((user: User) => ({profileImage: user.profileImage}))
         )
