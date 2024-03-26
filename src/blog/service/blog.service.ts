@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import {from, Observable, of, switchMap} from "rxjs";
+import {from, map, Observable, of, switchMap} from "rxjs";
 import {BlogEntry} from "../model/blog-entry.interface";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {BlogEntryEntity} from "../model/blog-entry.entity";
 import {UserService} from "../../user/user.service";
 import {User} from 'src/user/models/user.interface'
+import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
 const slugify = require('slugify');
 
 @Injectable()
@@ -67,5 +68,28 @@ export class BlogService {
             },
             relations: ['author']
         }));
+    }
+
+    paginateAll(options: IPaginationOptions): Observable<Pagination<BlogEntry>> {
+        //@ts-ignore
+        return from(paginate<BlogEntry>(this.blogRepository, options, {
+            relations: ['author']
+        })).pipe(
+            map((blogEntries: Pagination<BlogEntry>) => blogEntries)
+        )
+    }
+
+    paginateByUser(options: IPaginationOptions, userId: number): Observable<Pagination<BlogEntry>> {
+        //@ts-ignore
+        return from(paginate<BlogEntry>(this.blogRepository, options, {
+            relations: ['author'],
+            where: [
+                {author: {
+                    id: userId
+                    }}
+            ]
+        })).pipe(
+            map(blogEntries => blogEntries)
+        )
     }
 }
