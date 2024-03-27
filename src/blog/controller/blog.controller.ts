@@ -109,7 +109,6 @@ export class BlogController {
 
     @Get('image/:imagename')
     findImage(@Param('imagename') imagename, @Res() res): Observable<IImage> {
-        console.log(res)
         return of(res.sendFile(path.join(process.cwd(), 'uploads/blog-entry-images/' + imagename)))
     }
 }

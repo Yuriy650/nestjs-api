@@ -118,7 +118,6 @@ export class UserController {
 
     @Get('profile-image/:imagename')
     findProfileImage(@Param('imagename') imagename, @Res() res): Observable<Object> {
-        console.log(res)
         return of(res.sendFile(path.join(process.cwd(), 'uploads/profileimages/' + imagename)))
     }
 }
