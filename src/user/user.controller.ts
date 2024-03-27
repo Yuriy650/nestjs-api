@@ -22,7 +22,7 @@ import {Pagination} from "nestjs-typeorm-paginate";
 import {FileInterceptor} from "@nestjs/platform-express";
 import {diskStorage} from 'multer';
 import { v4 as uuidv4 } from 'uuid';
-import path = require('path')
+import path = require('path');
 import {join} from "path";
 import {UserIsUserGuard} from "../auth/guards/userIsUser.guard";
 
@@ -110,7 +110,6 @@ export class UserController {
     @Post('upload')
     @UseInterceptors(FileInterceptor('file', STORAGE))
     uploadFile(@UploadedFile() file, @Request() req): Observable<Object> {
-        console.log(req)
         const user: User = req.user
         return this.userService.update(user.id, {profileImage: file.filename}).pipe(
            map((user: User) => ({profileImage: user.profileImage}))
