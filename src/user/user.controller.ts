@@ -23,14 +23,12 @@ import {FileInterceptor} from "@nestjs/platform-express";
 import {diskStorage} from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import path = require('path');
-import {join} from "path";
 import {UserIsUserGuard} from "../auth/guards/userIsUser.guard";
 
 export const STORAGE = {
     storage: diskStorage({
         destination: './uploads/profileimages',
         filename: (req, file, cb) => {
-            console.log(path)
             const filename: string = path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
             const extension: string = path.parse(file.originalname).ext;
             cb(null, `${filename}${extension}`)
@@ -64,11 +62,6 @@ export class UserController {
       return this.userService.findOne(params.id);
     }
 
-    /*@Get()
-    findAll(): Observable<User[]> {
-        return this.userService.findAll();
-    }*/
-
     @Get()
     index(
         @Query('page') page: number = 1,
@@ -76,7 +69,6 @@ export class UserController {
         @Query('username') username: string
     ): Observable<Pagination<User>> {
         limit = limit > 100 ? 100 : limit;
-        console.log(username);
 
        if(username === null || username === undefined) {
            return this.userService.paginate({page, limit, route: 'http://localhost:3000/users'});

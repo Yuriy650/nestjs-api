@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import {BlogService} from "../service/blog.service";
 import {BlogEntry} from "../model/blog-entry.interface";
-import {map, Observable, of} from "rxjs";
+import {Observable, of} from "rxjs";
 import {JWTAuthGuard} from "../../auth/guards/jwt-guard";
 import {UserIsAuthorGuard} from "../../auth/guards/user-is-author.guard";
 import {FileInterceptor} from "@nestjs/platform-express";
