@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {catchError, map, Observable, throwError} from "rxjs";
-import {User} from "./authentication.service";
+import {User} from "../model/user.interface";
 
 export interface UserData {
   items: User[],
@@ -42,6 +42,18 @@ export class UsersService {
       //@ts-ignore
       map((user: User) => user)
     )
+  }
+
+  uploadProfileImage(formData: FormData): Observable<any> {
+    return this.http.post<FormData>('http://localhost:3000/users/upload', formData, {
+      reportProgress: true,
+      observe: 'events'
+    })
+  }
+
+  updateOne(user: User): Observable<Object> {
+    console.log(user)
+    return this.http.put('http://localhost:3000/users/' + user.id, user);
   }
 
   paginateByUsername(page: number, limit: number, username: string): Observable<UserData> {

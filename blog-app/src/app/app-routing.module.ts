@@ -4,6 +4,9 @@ import {LoginComponent} from "./components/login/login.component";
 import {RegisterComponent} from "./components/register/register.component";
 import {UsersComponent} from "./components/users/users.component";
 import {UserProfileComponent} from "./components/user-profile/user-profile.component";
+import {UpdateUserProfileComponent} from "./components/update-user-profile/update-user-profile.component";
+import {AuthGuard} from "./guards/auth.guard";
+import {HomeComponent} from "./components/home/home.component";
 
 const routes: Routes = [
   {
@@ -30,6 +33,20 @@ const routes: Routes = [
         component: UserProfileComponent
       }
     ]
+  },
+  {
+    path: 'update-profile',
+    component: UpdateUserProfileComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'home',
+    component: HomeComponent
+  },
+  {
+    path: '',
+    pathMatch: "full",
+    redirectTo: '/home'
   }
   ];
 

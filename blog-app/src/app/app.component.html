@@ -1,12 +1,10 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <span>Blog App</span>
+    <span routerLink="/home" class="home-link">Home</span>
     <span class="example-spacer"></span>
     <div class="container">
       <a routerLink="/users"><span>Users</span></a>
       <a routerLink="/admin"><span>Admin</span></a>
-      <!--<a routerLink="/login">Login</a>
-      <a routerLink="/register">Register</a>-->
       <mat-form-field style="margin-left: 20px; margin-top: 20px" name="loginRegisterDropdown">
         <mat-label>SignIn/SignUp</mat-label>
         <mat-select [(ngModel)]="selectedOption" (selectionChange)="onSelect()" name="entry">

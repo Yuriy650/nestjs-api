@@ -7,7 +7,7 @@ import {Router} from "@angular/router";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'blog-app';
+  title = 'controller-app';
   selectedOption: string = '';
   public entries = [
     {
@@ -17,12 +17,15 @@ export class AppComponent {
     {
       name: 'Register',
       link: 'register'
+    },
+    {
+      name: 'Update Profile',
+      link: 'update-profile'
     }
   ]
   constructor(private router: Router) {
   }
   onSelect() {
     this.router.navigate([`${this.selectedOption}`])
-    console.log(this.selectedOption)
   }
 }
