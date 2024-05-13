@@ -27,7 +27,6 @@ export const STORAGE = {
     storage: diskStorage({
         destination: './uploads/blog-entry-images',
         filename: (req, file, cb) => {
-            console.log(path)
             const filename: string = path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
             const extension: string = path.parse(file.originalname).ext;
             cb(null, `${filename}${extension}`)
@@ -109,6 +108,6 @@ export class BlogController {
 
     @Get('image/:imagename')
     findImage(@Param('imagename') imagename, @Res() res): Observable<IImage> {
-        return of(res.sendFile(path.join(process.cwd(), 'uploads/blog-entry-images/' + imagename)))
+        return of(res.sendFile(path.join(process.cwd(), `uploads/blog-entry-images/${imagename}`)))
     }
 }
